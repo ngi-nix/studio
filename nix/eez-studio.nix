@@ -29,6 +29,7 @@ let
   src = ./..;
   packageJson = importJSON "${toString src}/package.json";
   pname = packageJson.name;
+  mainProgram = pname;
 
   # Pass electron-builder symlinks to avoid unnecessary copies
   # Originally seen in https://github.com/NixOS/nixpkgs/pull/86169
@@ -102,7 +103,7 @@ stdenv.mkDerivation {
       mv ./dist/linux-unpacked/resources $resourcesDir
 
       mkdir -p $out/bin
-      makeWrapper '${electronExecutable}' "$out/bin/${pname}" \
+      makeWrapper '${electronExecutable}' "$out/bin/${mainProgram}" \
         --set ELECTRON_RESOURCES_PATH $resourcesDir \
         --add-flags "$resourcesDir/app.asar"
     '';
@@ -119,6 +120,6 @@ stdenv.mkDerivation {
     inherit homepage downloadPage changelog;
 
     license = lib.licenses.gpl3Only;
-    inherit maintainers platforms;
+    inherit maintainers mainProgram platforms;
   };
 }
