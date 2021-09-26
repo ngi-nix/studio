@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-21.05";
     flake-utils.url = "github:numtide/flake-utils";
-    nix-filter.url = "github:numtide/nix-filter";
+    # Filtering doesn't work right now, due to npmlock2nix trying to read the
+    # lock file. Follow up on how https://github.com/NixOS/nix/pull/5163 will
+    # be resolved.
+    # nix-filter.url = "github:numtide/nix-filter";
     npmlock2nix = {
       url = "github:ilkecan/npmlock2nix/";
       flake = false;
@@ -25,7 +28,7 @@
         defaultSystems
         eachSystem
       ;
-      nix-filter = inputs.nix-filter.lib;
+      # nix-filter = inputs.nix-filter.lib;
       nix-utils = inputs.nix-utils.lib;
       inherit (nix-utils)
         createOverlays
@@ -56,7 +59,7 @@
     {
       overlays = createOverlays derivations {
         inherit
-          nix-filter
+          # nix-filter
           nix-utils
         ;
       };

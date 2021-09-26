@@ -9,7 +9,6 @@
 { lib
 , electron
 , makeWrapper
-, nix-filter
 , nix-utils
 , nodejs
 , npmlock2nix
