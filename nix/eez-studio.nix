@@ -8,6 +8,7 @@
 { lib
 , electron
 , makeWrapper
+, nix-filter
 , nix-utils
 , nodejs
 , npmlock2nix
@@ -24,7 +25,10 @@ let
   inherit (lib) importJSON;
   inherit (nix-utils) getPatches;
   inherit (npmlock2nix.internal) add_node_modules_to_cwd;
+  inherit (nix-filter) inDirectory;
 
+  # Reading the files in the filtered directory is not possible right now.
+  # Follow up on how https://github.com/NixOS/nix/pull/5163 will be resolved.
   src = ./..;
   packageJson = importJSON "${toString src}/package.json";
   pname = packageJson.name;
@@ -45,7 +49,24 @@ let
 in
 
 stdenv.mkDerivation {
-  inherit pname version src;
+  inherit pname version;
+
+  src = nix-filter {
+    root = src;
+    include = [
+      "gulpfile.js"
+      "icon.icns"
+      "icon.ico"
+      "package-lock.json"
+      "package.json"
+      "resources/expression-grammar.pegjs"
+      "tsconfig.json"
+      (inDirectory "installation")
+      (inDirectory "libs")
+      (inDirectory "packages")
+    ];
+    name = pname;
+  };
 
   NO_UPDATE_NOTIFIER = 1;
 
