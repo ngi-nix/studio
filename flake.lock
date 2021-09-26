@@ -81,11 +81,11 @@
     "npmlock2nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1632602183,
-        "narHash": "sha256-3Mb8pbQCL0ZeyY2DtDt4uFFIyLVheSnG06Od0Lza7Ys=",
+        "lastModified": 1632654628,
+        "narHash": "sha256-2KjsT6TK9ZJ89/efgBTGsD9+7bnOUyzWSrS+8Izd5Uw=",
         "owner": "ilkecan",
         "repo": "npmlock2nix",
-        "rev": "e07031b578fef6d890cae96b653590cba4d206d0",
+        "rev": "8f382b6443cb417afc62bef67866fefe8ec6502a",
         "type": "github"
       },
       "original": {

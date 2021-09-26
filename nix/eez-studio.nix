@@ -8,12 +8,10 @@
 }:
 { lib
 , electron
-, eudev
 , makeWrapper
 , nix-filter
 , nix-utils
 , nodejs
-, python3
 , stdenv
 , symlinkJoin
 , ...
@@ -24,11 +22,7 @@ let
     concatStringsSep
     map
   ;
-  inherit (lib)
-    importJSON
-    optionals
-  ;
-  inherit (stdenv) isLinux;
+  inherit (lib) importJSON;
   inherit (nix-utils) getPatches;
 
   src = ./..;
@@ -40,6 +34,7 @@ let
   symlinkedElectron = symlinkJoin {
     name = "symlinked-electron";
     paths = [ electron.out ];
+    passthru = { inherit (electron) version headers; };
   };
 
   nm = import ./node_modules.nix {
@@ -52,25 +47,18 @@ stdenv.mkDerivation {
   inherit pname version src;
 
   NO_UPDATE_NOTIFIER = 1;
-  npm_config_runtime = "electron";
-  npm_config_target = electron.version;
-  npm_config_tarball = electron.headers;
 
   buildInputs = [ nm.out ];
 
   nativeBuildInputs = [
     makeWrapper.out
-    python3.out
-  ] ++ optionals isLinux [
-    eudev.out   # libudev.h
   ];
 
   patches = getPatches ./patches;
 
-  # TODO try to make it work with symlink
+  # couldn't make it work with symlink
   preConfigure = ''
-    cp --no-preserve=mode -r ${nm}/node_modules node_modules
-    chmod -R u+rw node_modules
+    cp -r ${nm}/node_modules node_modules
   '';
 
   buildPhase =
@@ -90,9 +78,6 @@ stdenv.mkDerivation {
       pushd $extraResourcesPath
       ${symlinkEach extraResources}
       popd
-
-      packages_with_gyp="$(find ./node_modules -name "*.gyp" | awk -F'/' '{ if ($3 ~ /^@/) printf "%s/%s\n", $3, $4; else print $3 }' | grep -v "npm" | uniq | tr "\n" " ")"
-      npm rebuild $packages_with_gyp
 
       npm run build
 
