@@ -28,7 +28,6 @@
         defaultSystems
         eachSystem
       ;
-      # nix-filter = inputs.nix-filter.lib;
       nix-utils = inputs.nix-utils.lib;
       inherit (nix-utils)
         createOverlays
@@ -57,12 +56,7 @@
       };
     in
     {
-      overlays = createOverlays derivations {
-        inherit
-          # nix-filter
-          nix-utils
-        ;
-      };
+      overlays = createOverlays derivations { inherit nix-utils; };
       overlay = self.overlays.eez-studio;
     } // eachSystem supportedSystems (system:
       let
