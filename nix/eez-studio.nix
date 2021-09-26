@@ -12,6 +12,7 @@
 , nix-filter
 , nix-utils
 , nodejs
+, npmlock2nix
 , stdenv
 , symlinkJoin
 , ...
@@ -24,6 +25,7 @@ let
   ;
   inherit (lib) importJSON;
   inherit (nix-utils) getPatches;
+  inherit (npmlock2nix.internal) add_node_modules_to_cwd;
 
   src = ./..;
   packageJson = importJSON "${toString src}/package.json";
@@ -57,9 +59,7 @@ stdenv.mkDerivation {
   patches = getPatches ./patches;
 
   # couldn't make it work with symlink
-  preConfigure = ''
-    cp -r ${nm}/node_modules node_modules
-  '';
+  preConfigure = add_node_modules_to_cwd nm "copy";
 
   buildPhase =
     let
