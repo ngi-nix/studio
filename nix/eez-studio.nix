@@ -4,7 +4,6 @@
 , changelog
 , maintainers
 , platforms
-, useWayland ? false
 }:
 { lib
 , electron
