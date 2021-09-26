@@ -77,5 +77,18 @@
 
         packages = getAttrs packageNames pkgs;
         defaultPackage = packages.eez-studio;
+
+        hydraJobs = {
+          build = packages;
+        };
+
+        devShell =
+          let
+            packageList = attrValues packages;
+          in
+          pkgs.mkShell {
+            packages = packageList;
+            inputsFrom = packageList;
+          };
       });
 }
