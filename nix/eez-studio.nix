@@ -26,6 +26,11 @@ let
   inherit (nix-utils) getPatches;
   inherit (npmlock2nix.internal) add_node_modules_to_cwd;
   inherit (nix-filter) inDirectory;
+  inherit (import ./electron-lib.nix pkgs)
+    electronBuilderUnpackedDirname
+    getElectronExecutable
+    symlinkElectron
+  ;
 
   # Reading the files in the filtered directory is not possible right now.
   # Follow up on how https://github.com/NixOS/nix/pull/5163 will be resolved.
@@ -34,13 +39,7 @@ let
   pname = packageJson.name;
   mainProgram = pname;
 
-  # Pass electron-builder symlinks to avoid unnecessary copies
-  # Originally seen in https://github.com/NixOS/nixpkgs/pull/86169
-  symlinkedElectron = symlinkJoin {
-    name = "symlinked-electron";
-    paths = [ electron.out ];
-    passthru = { inherit (electron) version headers; };
-  };
+  symlinkedElectron = symlinkElectron electron;
 
   nm = import ./node_modules.nix {
     inherit src nodejs;
@@ -107,26 +106,17 @@ stdenv.mkDerivation {
         --dir
     '';
 
-  installPhase =
-    let
-      electronExecutable =
-        if stdenv.isDarwin then
-          "${electron}/Applications/Electron.app/Contents/MacOS/Electron"
-        else
-          "${electron}/bin/electron"
-        ;
-    in
-    ''
-      mkdir -p $out/lib/${pname}
-      resourcesDir=$out/lib/${pname}/resources
+  installPhase = ''
+    mkdir -p $out/lib/${pname}
+    resourcesDir=$out/lib/${pname}/resources
 
-      mv ./dist/linux-unpacked/resources $resourcesDir
+    mv ./dist/${electronBuilderUnpackedDirname}/resources $resourcesDir
 
-      mkdir -p $out/bin
-      makeWrapper '${electronExecutable}' "$out/bin/${mainProgram}" \
-        --set ELECTRON_RESOURCES_PATH $resourcesDir \
-        --add-flags "$resourcesDir/app.asar"
-    '';
+    mkdir -p $out/bin
+    makeWrapper '${getElectronExecutable electron}' "$out/bin/${mainProgram}" \
+      --set ELECTRON_RESOURCES_PATH $resourcesDir \
+      --add-flags "$resourcesDir/app.asar"
+  '';
 
   meta = {
     description = packageJson.description;
