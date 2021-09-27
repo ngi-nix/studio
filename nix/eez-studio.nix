@@ -77,7 +77,9 @@ stdenv.mkDerivation {
 
   patches = getPatches ./patches;
 
-  # couldn't make it work with symlink
+  # couldn't make it work with symlink. may be related to this
+  # https://github.com/microsoft/TypeScript/issues/29518
+  # although the error is different
   preConfigure = add_node_modules_to_cwd nm "copy";
 
   buildPhase =
