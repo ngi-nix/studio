@@ -88,7 +88,11 @@
           in
           pkgs.mkShell {
             packages = packageList;
-            inputsFrom = packageList;
+
+            shellHook = ''
+              ${defaultPackage.preConfigure}
+              export PATH=./node_modules/.bin:$PATH
+            '';
           };
       });
 }
