@@ -4,12 +4,15 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-21.05";
     flake-utils.url = "github:numtide/flake-utils";
-    nix-filter.url = "github:numtide/nix-filter";
     npmlock2nix = {
       url = "github:ilkecan/npmlock2nix/";
       flake = false;
     };
     nix-utils.url = "git+https://git.sr.ht/~ilkecan/nix-utils";
+    source = {
+      url = "github:eez-open/studio";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, npmlock2nix, ... }@inputs:
@@ -25,7 +28,6 @@
         defaultSystems
         eachSystem
       ;
-      nix-filter = inputs.nix-filter.lib;
       nix-utils = inputs.nix-utils.lib;
       inherit (nix-utils)
         createOverlays
@@ -34,6 +36,7 @@
 
       supportedSystems = defaultSystems;
       commonArgs = {
+        source = inputs.source.outPath;
         version = getUnstableVersion self.lastModifiedDate;
         homepage = "https://github.com/eez-open/studio";
         downloadPage = "https://github.com/eez-open/studio/releases";
@@ -56,7 +59,6 @@
     {
       overlays = createOverlays derivations {
         inherit
-          nix-filter
           nix-utils
         ;
       };
