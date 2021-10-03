@@ -1,27 +1,2 @@
-.history
-node_modules
-npm-debug.log
-
-/dist
-/build
-packages/**/*.js
-packages/**/*.js.map
-packages/eez-studio-ui/_stylesheets/main.css
-
-electron-builder.yml
-
-installation/make-electron-builder-yml.js
-installation/extra-resources
-
-tools/freetype-tools/agg-2.5
-tools/freetype-tools/FreeType-Emscripten
-
-/TODO.txt
-
-.DS_Store
-
-**/*.eez-project-ui-state
-**/*.eez-project-runtime-settings
-
 # nix build
 /result*

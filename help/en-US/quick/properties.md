@@ -1,1 +1,0 @@
-- Change properties of currently selected object
