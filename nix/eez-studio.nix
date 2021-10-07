@@ -103,10 +103,10 @@ stdenv.mkDerivation {
   meta = {
     description = packageJson.description;
     longDescription =
-      "The EEZ Studio is an open source cross-platform modular visual tool" +
-      "aimed to address various programming and management tasks for EEZ BB3" +
-      "open source T&M chassis and EEZ H24005 programmable power supply and" +
-      "other T&M devices that support SCPI from manufacturers such as" +
+      "The EEZ Studio is an open source cross-platform modular visual tool " +
+      "aimed to address various programming and management tasks for EEZ BB3 " +
+      "open source T&M chassis and EEZ H24005 programmable power supply and " +
+      "other T&M devices that support SCPI from manufacturers such as " +
       "Keysight, Rigol, Siglent, etc.";
 
     inherit homepage downloadPage changelog;
